@@ -101,7 +101,7 @@ export default function Home() {
             >
               <div className="mockup-window border border-border dark:border-border-dark bg-card dark:bg-card-dark shadow-xl">
                 <Image 
-                  src="/dashboard-preview.png"
+                  src={`/insighthub/dashboard-preview.png`}
                   alt="Dashboard Preview"
                   width={2499}
                   height={1452}

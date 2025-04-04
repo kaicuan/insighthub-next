@@ -63,7 +63,7 @@ export default function GridDashboardCard({ dashboard }: GridDashboardCardProps)
         {/* Preview Area */}
         <div className="relative mb-4 h-40 bg-muted rounded-lg overflow-hidden">
           <Image
-            src={dashboard.preview_image}
+            src={`/insighthub${dashboard.preview_image}`}
             alt={`Preview of ${dashboard.title}`}
             layout="fill"
             objectFit="contain"
