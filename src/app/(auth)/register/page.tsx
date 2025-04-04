@@ -3,7 +3,7 @@ import RegisterPage from '@/components/auth/RegisterPage'
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <RegisterPage />
     </Suspense>
   );
