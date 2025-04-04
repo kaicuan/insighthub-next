@@ -1,7 +1,7 @@
 export interface Author {
     first_name: string;
     last_name: string;
-    profile_image: string;
+    profile_image: string | null;
 }
 
 export interface Dataset {
