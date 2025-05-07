@@ -1,38 +1,30 @@
-'use client'
-
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import GoogleLogo from '@/assets/icons/google_logo'
 import UQLogo from '@/assets/icons/uq_logo';
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState('');
-  const router = useRouter();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push(`/register?email=${encodeURIComponent(email)}`);
-  };  
-  
   return (
-    <div className="min-h-screen flex pt-28 justify-center bg-background">
-      <div className="w-full max-w-sm items-center p-6 space-y-6">
+    <div className="min-h-screen flex md:pt-[10vh] pt-10 justify-center bg-background">
+      <div className="w-full max-w-sm space-y-6 p-6">
         {/* Header */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">Create Account</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-sm text-muted-foreground">
             Let&apos;s get you started with InsightHub
           </p>
         </div>
 
-        {/* Social Signin Buttons */}
+        {/* Social Sign-in Buttons */}
         <div className="space-y-4">
-          <Button variant="primary" icon={<GoogleLogo />} className="w-full bg-[#3B78DC] hover:bg-[#3B78DC]/90 !text-white">
+          <Button variant="default" className="w-full bg-[#3B78DC] hover:bg-[#3B78DC]/90 text-white">
+            <GoogleLogo />
             Continue with Google
           </Button>
-          <Button variant="primary" icon={<UQLogo />} className="w-full bg-[#51247a] hover:bg-[#51247a]/90 !text-white">
+          <Button variant="default" className="w-full bg-[#51247a] hover:bg-[#51247a]/90 text-white">
+            <UQLogo />
             Continue with UQ SSO
           </Button>
         </div>
@@ -43,29 +35,26 @@ export default function SignUpPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-4 text-muted-foreground">
+            <span className="bg-background px-4 text-muted-foreground">
               Or
             </span>
           </div>
         </div>
 
-        {/* Email Input */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-sm font-medium mb-2 block">Email</label>
-            <input
+        {/* Email Form */}
+        <form action="register" method="get" className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
               type="email"
+              name="email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 bg-transparent border 
-                        rounded-lg focus:outline-none focus:ring-2 
-                        focus:ring-ring"
               placeholder="you@example.com"
+              className="bg-transparent"
             />
           </div>
-
-          <Button type="submit" variant="primary" className="w-full">
+          <Button type="submit" className="w-full">
             Continue
           </Button>
         </form>

@@ -28,7 +28,7 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex pt-28 justify-center bg-background">
+    <div className="min-h-screen flex md:pt-[10vh] justify-center bg-background">
       <div className="w-full max-w-sm p-6 space-y-6">
         {/* Header with back button */}
         <div className="flex items-center gap-3 mb-6">
