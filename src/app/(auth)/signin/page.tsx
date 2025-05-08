@@ -1,10 +1,8 @@
 // @/app/(auth)/signin/page.tsx
 
 import Link from 'next/link';
-import GoogleLogo from '@/assets/icons/google_logo'
-import UQLogo from '@/assets/icons/uq_logo';
-import { Button } from '@/components/ui/button';
 import SigninForm from '@/components/auth/signin-form';
+import SocialSigninButton from '@/components/auth/social-signin-button';
 
 export default function SigninPage() {
   return (
@@ -19,16 +17,7 @@ export default function SigninPage() {
         </div>
 
         {/* Social Sign-in Buttons */}
-        <div className="space-y-4">
-          <Button variant="default" className="w-full bg-[#3B78DC] hover:bg-[#3B78DC]/90 text-white">
-            <GoogleLogo />
-            Continue with Google
-          </Button>
-          <Button variant="default" className="w-full bg-[#51247a] hover:bg-[#51247a]/90 text-white">
-            <UQLogo />
-            Continue with UQ SSO
-          </Button>
-        </div>
+        <SocialSigninButton />
 
         {/* Divider */}
         <div className="relative">

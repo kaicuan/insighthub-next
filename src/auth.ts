@@ -2,25 +2,16 @@
 
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
 import { authConfig } from '@/auth.config';
 import { z } from 'zod';
-import type { User } from '@/lib/definitions';
 import bcrypt from 'bcrypt';
-import sql from '@/lib/db';
+import { getUser } from '@/lib/data';
  
-async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const user = await sql<User[]>`SELECT * FROM api_user WHERE email=${email}`;
-    return user[0];
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
-  }
-}
- 
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   providers: [
+    Google,
     Credentials({
       async authorize(credentials) {
         const parsedCredentials = z

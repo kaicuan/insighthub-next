@@ -2,6 +2,7 @@
 'use server'
 
 import { signIn } from "@/auth";
+import { getUser } from "@/lib/data";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -54,16 +55,17 @@ export async function register(
   const { firstName, lastName, email, password } = parsed.data;
 
   try {
-    const existingUser = await sql`SELECT * FROM api_user WHERE email = ${email}`;
-    if (existingUser.length > 0) {
+    const existingUser = await getUser(email);
+    if (existingUser) {
       return { errors: { email: ['This email is already registered'] } };
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
     await sql`
-      INSERT INTO api_user (first_name,last_name,email,password,is_superuser,is_staff,is_active,date_joined)
-      VALUES (${firstName},${lastName},${email},${hashedPassword},false,false,true,now()
+      INSERT INTO api_user
+        (first_name,last_name,email,password,provider,is_superuser,is_staff,is_active,date_joined)
+      VALUES (${firstName},${lastName},${email},${hashedPassword},'insighthub',false,false,true,now()
       )
     `;
 
