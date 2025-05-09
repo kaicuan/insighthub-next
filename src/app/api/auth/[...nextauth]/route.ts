@@ -8,7 +8,7 @@ function rewriteRequest(req: NextRequest) {
     headers,
     nextUrl: { protocol, host, pathname, search },
   } = req;
-  console.log(basePath)
+
   const detectedHost = headers.get("x-forwarded-host") ?? host;
   const detectedProtocol = headers.get("x-forwarded-proto") ?? protocol;
   const _protocol = `${detectedProtocol.replace(/:$/, "")}:`;

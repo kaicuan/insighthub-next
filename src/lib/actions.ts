@@ -15,7 +15,7 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', formData);
+    await signIn('insighthub', formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -69,9 +69,10 @@ export async function register(
       )
     `;
 
-    redirect('/signin');
   } catch (error) {
     console.error('Registration failed:', error);
     return { message: 'Registration failed. Please try again.' };
   }
+  
+  redirect('/signin');
 }

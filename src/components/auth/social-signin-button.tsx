@@ -4,6 +4,7 @@ import GoogleLogo from '@/assets/icons/google_logo'
 import UQLogo from '@/assets/icons/uq_logo';
 import { Button } from '@/components/ui/button';
 import { signIn } from '@/auth';
+import { redirect } from 'next/navigation';
 
 export default function SocialSigninButton() {
 
@@ -20,10 +21,17 @@ export default function SocialSigninButton() {
           Continue with Google
         </Button>
       </form>
-      <Button variant="default" className="w-full bg-[#51247a] hover:bg-[#51247a]/90 text-white">
-        <UQLogo />
-        Continue with UQ SSO
-      </Button>
+      <form
+        action={async () => {
+          "use server";
+          redirect("/api/auth/uq-callback");
+        }}
+      >
+        <Button variant="default" className="w-full bg-[#51247a] hover:bg-[#51247a]/90 text-white">
+          <UQLogo />
+          Continue with UQ SSO
+        </Button>
+      </form>
     </div>
   );
 }

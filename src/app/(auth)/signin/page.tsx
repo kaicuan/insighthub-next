@@ -12,7 +12,7 @@ export default function SigninPage() {
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">Welcome Back!</h1>
           <p className="text-sm text-muted-foreground">
-            Sign in to continue to InsightHub
+            Sign in to continue to <b>InsightHub</b>
           </p>
         </div>
 
