@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
-const basePath = process.env.BASE_PATH ?? '';
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 export default function ConsentPage() {
   return (

@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar/Navbar';
+import Navbar from '@/components/navbar/navbar';
 
 export default function SiteLayout({
   children,
@@ -8,9 +8,9 @@ export default function SiteLayout({
   return (
     <div>
       <Navbar />
-      <main className="pt-16">
+      <div className="pt-16">
         {children}
-      </main>
+      </div>
     </div>
   );
 }

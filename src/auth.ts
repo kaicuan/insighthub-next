@@ -6,7 +6,7 @@ import Google from 'next-auth/providers/google';
 import { authConfig } from '@/auth.config';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import { getUser } from '@/lib/data';
+import { getUserByEmail } from '@/lib/data';
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -50,7 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
  
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
+          const user = await getUserByEmail(email);
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password!.replace('bcrypt$', ''));
           if (passwordsMatch) return user;

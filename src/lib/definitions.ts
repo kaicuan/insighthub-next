@@ -9,4 +9,14 @@ declare module 'next-auth' {
     password?: string;
     profile_image?: string;
   }
-}
+};
+
+export type DashboardSummary = {
+  id: string;
+  dataset: string;
+  title: string;
+  is_public: boolean;
+  preview_image: string;
+  updated_at: string;
+  chart_count: number;
+};

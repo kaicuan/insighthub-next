@@ -60,7 +60,7 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
           <div className="text-center md:text-left">
             {/* Dashboard Title */}
             <h1 className="text-2xl sm:text-3xl font-bold lg:max-w-4/5 mb-2">
-              {dashboard.title}&nbsp;
+            {dashboard.title}&nbsp;
               <span 
                 className={`inline-flex px-2 py-1 text-xs font-normal rounded-full flex items-center gap-1 
                   ${dashboard.is_public 
@@ -72,8 +72,8 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                     <LockIcon className="w-4 h-4" />
                 )}
                 <span className="hidden sm:block">
-                {dashboard.is_public ? 'Public' : 'Private'}
-            </span>
+                    {dashboard.is_public ? 'Public' : 'Private'}
+                </span>
               </span>
             </h1>
             {/* Dashbord Description */}

@@ -2,7 +2,7 @@
 import { signIn } from "@/auth";
 import { NextResponse, type NextRequest } from "next/server";
 
-const basePath = process.env.BASE_PATH ?? '';
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 export async function GET(request: NextRequest) {
   try {

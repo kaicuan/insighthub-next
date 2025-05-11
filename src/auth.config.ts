@@ -1,10 +1,10 @@
 // @/auth.config.ts
 
 import type { NextAuthConfig } from 'next-auth';
-import { getUser, getUserByProvAccID } from '@/lib/data';
+import { getUserByProvAccID } from '@/lib/data';
 import sql from '@/lib/db';
  
-const basePath = process.env.BASE_PATH ?? ''
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
 export const authConfig = {
   basePath: `${basePath}/api/auth`,

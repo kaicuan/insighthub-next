@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from '@/context/ThemeContext';
+import { Toaster } from "@/components/ui/sonner"
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,7 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          {children}
+          <main className="scroll-container">
+            {children}
+            <Toaster position="top-center" richColors />
+          </main>
         </ThemeProvider>
       </body>
     </html>
