@@ -42,7 +42,7 @@ export default function GridDashboard({ dashboard }: { dashboard: DashboardSumma
           </div>
 
           {/* Metadata */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <div className="flex items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
             <div className="flex items-center gap-1 truncate max-w-[16rem]">
               <FileSpreadsheet className="h-3 w-3 flex-shrink-0" />
               <span className="truncate" title={dashboard.dataset}>
@@ -51,13 +51,13 @@ export default function GridDashboard({ dashboard }: { dashboard: DashboardSumma
             </div>
             <div className="flex items-center gap-1">
               <ChartColumn className="h-3 w-3 flex-shrink-0" />
-              <span>
+              <span className="whitespace-nowrap">
                 {dashboard.chart_count} chart{dashboard.chart_count > 1 ? "s" : ""}
               </span>
             </div>
             <div className="flex items-center gap-1">
               <RefreshCw className="h-3 w-3 flex-shrink-0" />
-              <span>
+              <span className="whitespace-nowrap">
                 {formatDistanceToNowStrict(new Date(dashboard.updated_at))} ago
               </span>
             </div>

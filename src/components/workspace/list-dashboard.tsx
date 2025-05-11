@@ -32,7 +32,7 @@ export default function ListDashboard({ dashboard }: { dashboard: DashboardSumma
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
+          <div className="flex-1 px-4 py-3 flex flex-col justify-between min-w-0">
             {/* Title and Visibility */}
             <div className="flex items-center gap-2 max-w-full mb-1 pr-8">
               <h3 className="font-medium two-line-truncate break-words">
@@ -42,7 +42,7 @@ export default function ListDashboard({ dashboard }: { dashboard: DashboardSumma
             </div>
 
             {/* Metadata */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground pr-8">
               <div className="flex items-center gap-1 truncate max-w-[16rem]">
                 <FileSpreadsheet className="h-3 w-3 flex-shrink-0" />
                 <span className="truncate" title={dashboard.dataset}>
@@ -51,13 +51,13 @@ export default function ListDashboard({ dashboard }: { dashboard: DashboardSumma
               </div>
               <div className="flex items-center gap-1">
                 <ChartColumn className="h-3 w-3 flex-shrink-0" />
-                <span>
+                <span className="whitespace-nowrap">
                   {dashboard.chart_count} chart{dashboard.chart_count > 1 ? "s" : ""}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <RefreshCw className="h-3 w-3 flex-shrink-0" />
-                <span>
+                <span className="whitespace-nowrap">
                   {formatDistanceToNowStrict(new Date(dashboard.updated_at))} ago
                 </span>
               </div>
