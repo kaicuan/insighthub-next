@@ -1,6 +1,9 @@
+// @lib/data.ts
+
 import { User } from "next-auth";
 import sql from "@/lib/db";
-import { DashboardSummary } from "@/lib/definitions";
+import { DashboardSummary, Dashboard } from "@/lib/definitions";
+import { auth } from "@/auth";
 
 export async function getUserById(id:string): Promise<User | undefined> {
   try {
@@ -69,7 +72,7 @@ export async function getWorkspaceContent(id:string): Promise<DashboardSummary[]
     `;
     return workspaceContent;
   } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    console.error('Failed to fetch workspace:', error);
+    throw new Error('Failed to fetch workspace.');
   }
 }

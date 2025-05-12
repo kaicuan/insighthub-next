@@ -1,4 +1,3 @@
-import { fetchViewDashboardList } from '@/app/api/data';
 import { auth } from '@/auth';
 import WorkspaceContent from '@/components/workspace/workspace-content';
 import { getWorkspaceContent } from '@/lib/data';

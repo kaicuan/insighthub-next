@@ -1,6 +1,6 @@
 // @/components/navbar/navbar.tsx
 import { auth } from '@/auth';
-import Brand from '@/components/Brand';
+import Brand from '@/components/brand'
 import UserMenu from '@/components/navbar/user-menu';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';

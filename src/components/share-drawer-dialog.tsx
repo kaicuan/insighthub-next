@@ -30,11 +30,13 @@ export function ShareDrawerDialog({
   dashboardId,
   dashboardTitle,
   dashboardIsPublic,
+  isAuthor,
   children,
 }: {
   dashboardId: string
   dashboardTitle: string
   dashboardIsPublic: boolean
+  isAuthor: boolean
   children: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
@@ -46,6 +48,7 @@ export function ShareDrawerDialog({
         dashboardId={dashboardId}
         dashboardIsPublic={dashboardIsPublic}
         dashboardTitle={dashboardTitle}
+        isAuthor={isAuthor}
       />
     </div>
   )
@@ -87,10 +90,12 @@ function ShareForm({
   dashboardId,
   dashboardIsPublic,
   dashboardTitle,
+  isAuthor,
 }: {
   dashboardId: string
   dashboardIsPublic: boolean
   dashboardTitle: string
+  isAuthor: boolean
 }) {
   const [state, formAction, isPending] = useActionState(updateDashboardPublic, null)
   const qrRef = useRef<HTMLCanvasElement>(null);
@@ -131,49 +136,51 @@ function ShareForm({
 
   return (
     <>
-      <form
-        action={formAction}
-        className="space-y-6"
-      >
-        <input type="hidden" name="id" value={dashboardId} />
-        <input
-          type="hidden"
-          name="isPublic"
-          value={(!dashboardIsPublic).toString()}
-        />
-
-        <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-          <div className="flex items-center gap-3 pr-6">
-          {dashboardIsPublic ? (
-            <>
-              <Globe className="w-5 h-5 text-primary shrink-0" />
-              <div>
-                <Label className="font-medium">Public Access</Label>
-                <p className="text-xs text-muted-foreground pt-1">
-                  Public dashboard. Anyone can view this dashboard.
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <LockKeyhole className="w-5 h-5 text-primary shrink-0" />
-              <div>
-                <Label className="font-medium">Restricted Access</Label>
-                <p className="text-xs text-muted-foreground pt-1">
-                    Private dashboard. Only you have access to this dashboard.
-                  </p>
-              </div>
-            </>
-          )}
-          </div>
-          <Switch
-            checked={dashboardIsPublic}
-            disabled={isPending}
-            type="submit"
-            aria-label="Toggle public access"
+      {isAuthor &&
+        <form
+          action={formAction}
+          className="space-y-6"
+        >
+          <input type="hidden" name="id" value={dashboardId} />
+          <input
+            type="hidden"
+            name="isPublic"
+            value={(!dashboardIsPublic).toString()}
           />
-        </div>
-      </form>
+
+          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-3 pr-6">
+            {dashboardIsPublic ? (
+              <>
+                <Globe className="w-5 h-5 text-primary shrink-0" />
+                <div>
+                  <Label className="font-medium">Public Access</Label>
+                  <p className="text-xs text-muted-foreground pt-1">
+                    Public dashboard. Anyone can view this dashboard.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <LockKeyhole className="w-5 h-5 text-primary shrink-0" />
+                <div>
+                  <Label className="font-medium">Restricted Access</Label>
+                  <p className="text-xs text-muted-foreground pt-1">
+                      Private dashboard. Only you have access to this dashboard.
+                    </p>
+                </div>
+              </>
+            )}
+            </div>
+            <Switch
+              checked={dashboardIsPublic}
+              disabled={isPending}
+              type="submit"
+              aria-label="Toggle public access"
+            />
+          </div>
+        </form>
+      }
 
       {dashboardIsPublic && (
         <div className="space-y-4">

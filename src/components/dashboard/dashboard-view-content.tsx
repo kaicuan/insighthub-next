@@ -1,65 +1,18 @@
-import { getDashboardView } from '@/lib/data/dashboard';
-import { notFound } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { ShareDrawerDialog } from '@/components/share-drawer-dialog';
-import { ChartColumn, ChevronLeft, RefreshCw, Share2, SquarePen } from 'lucide-react';
-import { auth } from '@/auth';
-import Link from 'next/link';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import ImageWithFallback from '@/components/ui/image-with-fallback';
-import { VisibilityBadge } from '@/components/visibility-badge';
-import { formatDistanceToNowStrict } from 'date-fns';
-import { Suspense } from 'react';
-import Chart from '@/components/dashboard/chart';
+import { Dashboard } from "@/lib/definitions";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BarChart } from "@/components/BarChart";
+import { LineChart } from "@/components/LineChart";
+import { formatDistanceToNowStrict } from "date-fns";
+import { ChartColumn, RefreshCw } from "lucide-react";
+import { Suspense } from "react";
+import ImageWithFallback from "@/components/ui/image-with-fallback";
+import { VisibilityBadge } from "@/components/visibility-badge";
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
-  const id = params.id;
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  const dashboard = await getDashboardView(id);
-  if (!dashboard) {
-    notFound();
-  }
-  
-  const isAuthor = String(userId) === String(dashboard.author.id);
-
+export default function DashboardViewContent({ dashboard }:{ dashboard:Dashboard }) {
   return (
-    <div className="max-w-7xl pb-10 mx-auto px-4 xs:px-6 sm:px-10 lg:px-24">
-      {/* Navigation Section */}
-      <div className="flex justify-between items-center mt-4 md:mb-4 border-border">
-        <Link href="/workspace" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors hover:underline">
-          <ChevronLeft className="w-5 h-5" />
-          <span className="hidden sm:block">Back to Workspace</span>
-        </Link>
-
-        <div className="flex gap-2">
-          <ShareDrawerDialog
-            dashboardId={dashboard.id}
-            dashboardTitle={dashboard.title}
-            dashboardIsPublic={dashboard.is_public}
-            isAuthor={isAuthor}
-          >
-            <Button variant="ghost">
-              <Share2 className="h-4 w-4" />
-              Share
-            </Button>
-          </ShareDrawerDialog>
-          
-          {isAuthor && (
-            <Link href={`/dashboard/${dashboard.id}/edit`}>
-              <Button>
-                <SquarePen className="h-4 w-4" />
-                Edit
-              </Button>
-            </Link>
-          )}
-        </div>
-      </div>
-
+    <>
+      {/* Hero Section */}
       <div className="bg-background mb-8 px-6 py-4 border-b">
-          {/* Hero Section */}
           <div className="text-center md:text-left">
             <h1 className="text-2xl sm:text-3xl font-bold lg:max-w-4/5 mb-2">
               {dashboard.title}&nbsp;
@@ -68,11 +21,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 className="inline-flex align-middle" 
               />
             </h1>
+            
             <p className="text-muted-foreground">
               {dashboard.description}
             </p>
             
             <div className="flex items-center gap-2 mt-4 justify-center md:justify-start">
+              {/* Avatar */}
               <Avatar >
                 {dashboard.author?.profile_image ? (
                   <Suspense fallback={<AvatarFallback className='rounded-lg'>{dashboard.author?.first_name?.charAt(0)}</AvatarFallback>}>
@@ -118,17 +73,39 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           >
             <div className="flex flex-col gap-2 mb-4 mx-2 text-justify">
               <div>
-                <h3 className="font-semibold">{chart.title || 'Untitled chart'}</h3>
+                <h3 className="font-semibold">{chart.title}</h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {chart.description}
+                  {chart.description || 'No description'}
                 </p>
               </div>
             </div>
 
-            <Chart data={chart.data} config={chart.config} />
+            {chart.config.type === 'bar' ? (
+              <BarChart
+                className="h-64"
+                data={chart.data}
+                index={chart.config.index}
+                categories={chart.config.categories}
+                startEndOnly={chart.config.start_end_only}
+                xAxisLabel={chart.config.x_axis_label}
+                yAxisLabel={chart.config.y_axis_label}
+                legendPosition='left'
+              />
+            ) : (
+              <LineChart
+                className="h-64"
+                data={chart.data}
+                index={chart.config.index}
+                categories={chart.config.categories}
+                startEndOnly={chart.config.start_end_only}
+                xAxisLabel={chart.config.x_axis_label}
+                yAxisLabel={chart.config.y_axis_label}
+                legendPosition='left'
+              />
+            )}
           </div>
         ))}
       </div>
-    </div>
+    </>
   )
 }

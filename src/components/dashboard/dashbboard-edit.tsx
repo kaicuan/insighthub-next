@@ -1,16 +1,9 @@
 'use client';
 
-import { useState, useRef, useId } from 'react';
-import Link from 'next/link';
-import { 
-  RiArrowLeftSLine as ArrowBackIcon, 
-  RiSave2Fill as SaveIcon, 
-  RiAddLine as AddIcon 
-} from '@remixicon/react';
-import { EditDashboard } from '@/types/dashboard';
-import Button from '@/components/Button';
-import EditableField from '@/components/dashboard/EditableField';
-import { SortableChart } from '@/components/dashboard/SortableChart';
+import { useState, useRef, useId, useEffect, useActionState } from 'react';
+import{ Button } from '@/components/ui/button';
+import EditableField from '@/components/dashboard/editable-field';
+import { SortableChart } from '@/components/dashboard/sortable-chart';
 import {
   DndContext,
   closestCenter,
@@ -25,13 +18,17 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
+import { EditDashboard } from '@/lib/definitions';
+import { Plus, SaveAll } from 'lucide-react';
+import CancelDialog from '@/components/dashboard/cancel-dialog';
+import { toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
+import { updateDashboard } from '@/lib/actions';
 
-interface DashboardEditPageProps {
-  dashboard: EditDashboard;
-}
-
-export default function DashboardEditPage({ dashboard }: DashboardEditPageProps) {
+export default function DashboardEditPage({ dashboard }: { dashboard: EditDashboard }) {
+  const [state, formAction, isPending] = useActionState(updateDashboard, null);
   const [dashboardState, setDashboardState] = useState<EditDashboard>(dashboard);
+  const [deletedCharts, setDeletedCharts] = useState<string[]>([])
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const dndId = useId();
@@ -42,6 +39,12 @@ export default function DashboardEditPage({ dashboard }: DashboardEditPageProps)
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  useEffect(() => {
+    if (state?.message) {
+      toast.error(state.message)
+    }
+  }, [state])
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
@@ -86,16 +89,21 @@ export default function DashboardEditPage({ dashboard }: DashboardEditPageProps)
       ...prev,
       charts: prev.charts.filter(chart => chart.id !== chartId)
     }));
+    setDeletedCharts(prev => [...prev, chartId]);
   };
 
-  const handleSave = () => {
-    if (!dashboardState.title.trim()) return alert("Title cannot be empty");
-    console.log('Saving:', dashboardState);
+  const handleSubmit = (formData: FormData) => {
+    formData.append('id', dashboard.id);
+    formData.append('title', dashboardState.title);
+    formData.append('description', dashboardState.description || '');
+    formData.append('charts', JSON.stringify(dashboardState.charts));
+    formData.append('deletedCharts', JSON.stringify(deletedCharts));
+    return formAction(formData);
   };
 
   const handleAddNewChart = () => {
     const newChart = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       title: '',
       description: '',
       data: [],
@@ -104,7 +112,7 @@ export default function DashboardEditPage({ dashboard }: DashboardEditPageProps)
         x_axis: '',
         y_axis: '',
         series: null,
-        aggregation: 'none',
+        aggregation: 'sum',
         index: '',
         x_axis_label: '',
         start_end_only: false,
@@ -123,34 +131,38 @@ export default function DashboardEditPage({ dashboard }: DashboardEditPageProps)
 
   return (
     <div className="max-w-7xl pb-10 mx-auto px-4 xs:px-6 sm:px-10 lg:px-24">
+      
       {/* Navigation Section */}
-      <div className="flex justify-between items-center mt-4 md:mb-4 border-border">
-        <Link href="/workspace" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors hover:underline">
-          <ArrowBackIcon className="w-5 h-5" />
-          <span className="hidden sm:block">Back to Workspaces</span>
-        </Link>
-
+      <div className="flex justify-end items-center mt-4 md:mb-4 border-border">
         <div className='flex gap-2'>
-          <Link href={`/dashboard/${dashboard.id}/view`}>
-            <Button
-              variant="ghost"
-            >
+          <CancelDialog dashboardId={dashboard.id}>
+            <Button variant="ghost">
               Cancel
             </Button>
-          </Link>
-          <Button
-            icon={<SaveIcon />}
-            variant="primary"
-            onClick={handleSave}
-          >
-            Save Changes
-          </Button>
+          </CancelDialog>
+          <form action={handleSubmit}>
+            <Button 
+              type="submit" 
+              disabled={isPending}
+              aria-disabled={isPending}
+            >
+              <SaveAll className="h-4 w-4" />
+              {isPending ? (
+                <span className="animate-pulse">Saving ...</span>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
+          </form>
         </div>
       </div>
 
-      {/* Editable Hero Section */}
-      <div className="bg-card mb-8 px-6 py-4 border-b">
+      <div className="bg-background mb-8 px-6 py-4 border-b">
+        {/* Hero Section */}
         <div className="text-center md:text-left">
+          {state?.errors?.title && (
+            <p className="text-red-500 text-sm">{state.errors.title[0]}</p>
+          )}
           <EditableField
             ref={titleRef}
             value={dashboardState.title}
@@ -161,7 +173,6 @@ export default function DashboardEditPage({ dashboard }: DashboardEditPageProps)
             onEnter={() => descriptionRef.current?.focus()}
             ariaLabel="Dashboard title"
           />
-
           <EditableField
             ref={descriptionRef}
             value={dashboardState.description}
@@ -200,15 +211,12 @@ export default function DashboardEditPage({ dashboard }: DashboardEditPageProps)
           </SortableContext>
         </DndContext>
         
-        {/* New Chart Button - Circular Design */}
-        <div className="bg-card p-6 flex flex-col items-center justify-center 
-                    group space-y-3">
+        <div className="p-6 flex flex-col items-center justify-center space-y-3">
           <div
-            className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center
-                        group-hover:bg-primary/20 transition-colors"
+            className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
             onClick={handleAddNewChart}
           >
-            <AddIcon className="!w-8 !h-8 text-primary group-hover:text-primary-dark" />
+            <Plus className="w-8 h-8" />
           </div>
           <p className="text-muted-foreground group-hover:text-primary transition-colors text-center">
             Add New Chart

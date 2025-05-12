@@ -25,7 +25,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
 import { createDashboard } from "@/lib/actions"
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { toast } from "sonner"
 
 export default function DrawerDialog() {
   const [open, setOpen] = React.useState(false)
@@ -79,6 +80,12 @@ export default function DrawerDialog() {
 function CreateDashboardForm({ className }: React.ComponentProps<"form">) {
   const [state, action, isPending] = useActionState(createDashboard, undefined)
   const [title, setTitle] = React.useState('')
+
+  useEffect(() => {
+    if (state?.message) {
+      toast.error(state.message)
+    }
+  }, [state])
 
   return (
     <form

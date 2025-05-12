@@ -1,4 +1,4 @@
-// components/UserMenu.tsx
+// @/components/UserMenu.tsx
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,8 +22,6 @@ import { Suspense } from 'react';
 import ThemeToggle from '@/components/theme-toggle';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
-
 export default async function UserMenu() {
   let user;
   const session = await auth();
@@ -42,9 +40,9 @@ export default async function UserMenu() {
               <Suspense fallback={<AvatarFallback className='rounded-lg'>{user?.first_name?.charAt(0)}</AvatarFallback>}>
                 <ImageWithFallback
                   src={
-                    user?.profile_image?.startsWith('http')
+                    user.profile_image.startsWith('http')
                       ? user.profile_image
-                      : basePath + `/${user?.profile_image}`
+                      : `/${user.profile_image}`
                   }
                   alt={`Profile image of ${user?.first_name}`}
                   fill={true}
@@ -74,9 +72,9 @@ export default async function UserMenu() {
                 <Suspense fallback={<AvatarFallback className='rounded-lg'>{user?.first_name?.charAt(0)}</AvatarFallback>}>
                   <ImageWithFallback
                     src={
-                      user?.profile_image?.startsWith('http')
+                      user.profile_image.startsWith('http')
                         ? user.profile_image
-                        : basePath + `/${user?.profile_image}`
+                        : `/${user.profile_image}`
                     }
                     alt={`Profile image of ${user?.first_name}`}
                     fill={true}

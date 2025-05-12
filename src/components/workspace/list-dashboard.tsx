@@ -1,7 +1,7 @@
 import Link from "next/link"
 import {
   ChartColumn,
-  FileSpreadsheet,
+  FileChartColumn,
   RefreshCw
 } from "lucide-react"
 import { formatDistanceToNowStrict } from "date-fns"
@@ -23,11 +23,11 @@ export default function ListDashboard({ dashboard }: { dashboard: DashboardSumma
           {/* Thumbnail (visible only on sm and above) */}
           <div className="hidden sm:block relative w-40 h-24 flex-shrink-0 overflow-hidden">
             <ImageWithFallback
-              src={dashboard.preview_image || "/insighthub/dashboard-preview.png"}
+              src={dashboard.preview_image || "/dashboard-preview.png"}
               alt={`Preview of ${dashboard.title}`}
               fill={true}
               className="object-cover transition-transform group-hover:scale-105"
-              fallback={"/insighthub/dashboard-preview.png"}
+              fallback={"/dashboard-preview.png"}
             />
           </div>
 
@@ -44,7 +44,7 @@ export default function ListDashboard({ dashboard }: { dashboard: DashboardSumma
             {/* Metadata */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground pr-8">
               <div className="flex items-center gap-1 truncate max-w-[16rem]">
-                <FileSpreadsheet className="h-3 w-3 flex-shrink-0" />
+                <FileChartColumn className="h-3 w-3 flex-shrink-0" />
                 <span className="truncate" title={dashboard.dataset}>
                   {dashboard.dataset}
                 </span>

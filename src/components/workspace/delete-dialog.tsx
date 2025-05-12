@@ -1,4 +1,4 @@
-// components/DeleteDialog.tsx
+// @/components/dashboard/delete-dialog.tsx
 "use client"
 
 import { useActionState, useEffect } from "react";
