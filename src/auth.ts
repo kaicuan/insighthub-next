@@ -26,9 +26,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         
         if (
           payload.email.includes('__redacted__') ||
-          !payload.firstname.includes('__redacted__') ||
-          !payload.lastname.includes('__redacted__')
+          payload.firstname.includes('__redacted__') ||
+          payload.lastname.includes('__redacted__')
         ) {
+          console.log(payload.email, payload.first_name, payload.last_name)
           throw new Error('MISSING_CONSENT');
         }
 

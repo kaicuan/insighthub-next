@@ -59,8 +59,8 @@ export const authConfig = {
       return false
     },
     async jwt({ token, user, account}) {
-      if (account?.provider === 'google') {
-        const appuser = await getUserByProvAccID(account.providerAccountId!, 'google');
+      if (account?.provider && account?.provider != 'insighthub') {
+        const appuser = await getUserByProvAccID(account.providerAccountId, account.provider);
         token.userId = appuser!.id;
       } else if (user) {
           token.userId = user.id;
