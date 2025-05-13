@@ -33,7 +33,7 @@ export default function CardDropdown({ dashboard }: { dashboard:DashboardSummary
           dashboardId={dashboard.id}
           dashboardTitle={dashboard.title}
           dashboardIsPublic={dashboard.is_public}
-          isAuthor={false}
+          isAuthor={true}
         >
           <DropdownMenuItem className="cursor-pointer">
             <Share2 className="mr-2 h-4 w-4" />
