@@ -62,7 +62,6 @@ export async function getDashboardView(id:string): Promise<Dashboard | undefined
 }
 
 export async function getLikeData(dashboardId: string) {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   const session = await auth()
   const userId = session?.user?.id
 
@@ -98,7 +97,6 @@ export async function getLikeData(dashboardId: string) {
 }
 
 export async function getDashboardComment(id: string): Promise<Comment[] | undefined> {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   try {
     const comments = await sql<Comment[]>`
       SELECT
