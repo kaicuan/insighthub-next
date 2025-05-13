@@ -45,7 +45,7 @@ export async function getUserByProvAccID(providerAccountId: string, provider: st
   }
 }
 
-export async function getWorkspaceContent(id:string): Promise<DashboardSummary[] | undefined> {
+export async function getWorkspaceContent(id: string): Promise<DashboardSummary[] | undefined> {
   try {
     const workspaceContent = await sql<DashboardSummary[]>`
       SELECT 
@@ -57,7 +57,7 @@ export async function getWorkspaceContent(id:string): Promise<DashboardSummary[]
         db.updated_at,
         COUNT(c.id) AS chart_count
       FROM api_dashboard db
-      JOIN api_dataset dt ON db.dataset_id = dt.id
+      JOIN api_dataset dt ON dt.dashboard_id = db.id
       LEFT JOIN api_chart c ON db.id = c.dashboard_id
       WHERE db.user_id = ${id}
       GROUP BY 

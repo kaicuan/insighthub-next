@@ -121,12 +121,12 @@ export async function getDashboardComment(id: string): Promise<Comment[] | undef
   }
 }
 
-export async function getDashboardEdit(id:string): Promise<EditDashboard | undefined> {
+export async function getDashboardEdit(id: string): Promise<EditDashboard | undefined> {
   const session = await auth();
   if (!session?.user?.id) {
     notFound();
   }
-  
+
   let dashboard;
   try {
     dashboard = await sql<EditDashboard[]>`
@@ -160,22 +160,22 @@ export async function getDashboardEdit(id:string): Promise<EditDashboard | undef
             ) FILTER (WHERE c.id IS NOT NULL),
             '[]'::json
         ) AS charts
-    FROM api_dashboard db
-    JOIN api_user u ON db.user_id = u.id
-    JOIN api_dataset ds ON db.dataset_id = ds.id
-    LEFT JOIN api_chart c ON db.id = c.dashboard_id
-    WHERE db.id = ${id}
-    GROUP BY
-        db.id,
-        u.id,
-        u.first_name,
-        u.last_name,
-        u.profile_image,
-        ds.filename,
-        ds.columns,
-        ds.data;
+      FROM api_dashboard db
+      JOIN api_user u ON db.user_id = u.id
+      JOIN api_dataset ds ON ds.dashboard_id = db.id
+      LEFT JOIN api_chart c ON db.id = c.dashboard_id
+      WHERE db.id = ${id}
+      GROUP BY
+          db.id,
+          u.id,
+          u.first_name,
+          u.last_name,
+          u.profile_image,
+          ds.filename,
+          ds.columns,
+          ds.data;
     `;
-
+    
   } catch (error) {
     console.error('Failed to fetch dashboard:', error);
     throw new Error('Failed to fetch dashboard.');

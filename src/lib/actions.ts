@@ -132,20 +132,20 @@ export async function createDashboard(
     const datasetId = uuidv4();
     id = uuidv4();
     await sql.begin(async sql => {
-      // Insert dataset
-      await sql`
-        INSERT INTO api_dataset 
-          (id, filename, columns, data, uploaded_at)
-        VALUES 
-          (${datasetId}, ${file.name}, ${col}, ${data as []}, NOW())
-      `;
-  
-      // Insert dashboard
+      // Insert dashboard 
       await sql`
         INSERT INTO api_dashboard
-          (id, user_id, dataset_id, title, is_public, created_at, updated_at)
+          (id, user_id, title, is_public, created_at, updated_at)
         VALUES
-          (${id}, ${user.id}, ${datasetId}, ${title}, FALSE, NOW(), NOW())
+          (${id}, ${user.id}, ${title}, FALSE, NOW(), NOW())
+      `;
+
+      // Insert dataset
+      await sql`
+        INSERT INTO api_dataset
+          (id, filename, columns, data, uploaded_at, dashboard_id)
+        VALUES
+          (${datasetId}, ${file.name}, ${col}, ${data as []}, NOW(), ${id})
       `;
     });
 
@@ -153,7 +153,7 @@ export async function createDashboard(
     console.error('Creation failed:', error);
     return { message: 'Failed to create dashboard. Please try again.' };
   }
-  
+
   redirect(`/dashboard/${id}/edit`);
 }
 
