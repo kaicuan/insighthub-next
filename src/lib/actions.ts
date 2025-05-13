@@ -398,7 +398,6 @@ export async function toggleLike(
     hasLiked: Boolean(formData.get('hasLiked')),
   });
   if (!parsed.success) {
-    console.log(parsed.error)
     return { message:"Invalid input", "errors": parsed.error.flatten().fieldErrors };
   }
   const { dashboardId, hasLiked } = parsed.data;

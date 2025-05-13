@@ -5,8 +5,14 @@ import { NextResponse, type NextRequest } from "next/server";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 export async function GET(request: NextRequest) {
-  const url = new URL(request.url);
-  const callbackUrl = url.searchParams.get('callbackUrl');
+  const {
+    headers,
+    nextUrl: { protocol, host, pathname, search },
+  } = request;
+  const detectedHost = headers.get("x-forwarded-host") ?? host;
+  const detectedProtocol = headers.get("x-forwarded-proto") ?? protocol;
+  const _protocol = `${detectedProtocol.replace(/:$/, "")}:`;
+  const url = new URL(_protocol + "//" + detectedHost + basePath + pathname + search);
 
   try {
     await signIn("uqsso", {
@@ -27,16 +33,16 @@ export async function GET(request: NextRequest) {
     
     if (errorMessage == "Error: MISSING_CONSENT") {
       return NextResponse.redirect(
-        new URL(basePath + `/request-consent`, request.url)
+        new URL(basePath + `/request-consent`, url)
       );
     }
     
     return NextResponse.redirect(
-      new URL(basePath + `/signin?error=${encodeURIComponent(errorMessage)}`, request.url)
+      new URL(basePath + `/signin?error=${encodeURIComponent(errorMessage)}`, url)
     );
   }
 
   return NextResponse.redirect(
-    new URL(callbackUrl || basePath + "/workspace", url.origin)
+    new URL(basePath + "/workspace", url)
   );
 }

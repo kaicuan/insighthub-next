@@ -22,14 +22,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error('UQ_AUTH_ERROR');
         }
 
-        const payload = JSON.parse(kvData);
-        
+        const wrapped = `[${kvData}]`
+        const parsed = JSON.parse(wrapped);
+        const payload = parsed[0]
         if (
           payload.email.includes('__redacted__') ||
           payload.firstname.includes('__redacted__') ||
           payload.lastname.includes('__redacted__')
         ) {
-          console.log(payload.email, payload.first_name, payload.last_name)
           throw new Error('MISSING_CONSENT');
         }
 
