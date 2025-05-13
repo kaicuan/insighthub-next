@@ -21,7 +21,7 @@ export async function authenticate(
     await signIn('insighthub', formData);
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
+      switch (error.name) {
         case 'CredentialsSignin':
           return 'Invalid credentials.';
         default:
@@ -129,6 +129,8 @@ export async function createDashboard(
       };
     }
 
+    const col = meta.fields;
+
     const datasetId = uuidv4();
     id = uuidv4();
     await sql.begin(async sql => {
@@ -137,7 +139,7 @@ export async function createDashboard(
         INSERT INTO api_dataset 
           (id, filename, columns, data, uploaded_at)
         VALUES 
-          (${datasetId}, ${file.name}, ${meta.fields!}, ${data}, NOW())
+          (${datasetId}, ${file.name}, ${col}, ${data as []}, NOW())
       `;
   
       // Insert dashboard

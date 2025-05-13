@@ -43,7 +43,7 @@ export default function LikeButton({
         toast.error(state.message)
       }
     }
-  }, [state])
+  }, [state, hasLikedState, router])
 
   return (
     <form action={formAction}>
