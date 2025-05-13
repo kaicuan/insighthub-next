@@ -2,8 +2,7 @@
 
 import { User } from "next-auth";
 import sql from "@/lib/db";
-import { DashboardSummary, Dashboard } from "@/lib/definitions";
-import { auth } from "@/auth";
+import { DashboardSummary } from "@/lib/definitions";
 
 export async function getUserById(id:string): Promise<User | undefined> {
   try {

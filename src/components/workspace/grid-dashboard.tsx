@@ -5,7 +5,7 @@ import {
   RefreshCw
 } from "lucide-react"
 import { formatDistanceToNowStrict } from "date-fns"
-import type { DashboardSummary } from "@/types/dashboard"
+import type { DashboardSummary } from "@/lib/definitions"
 import CardDropdown from "@/components/workspace/card-dropdown"
 import ImageWithFallback from "@/components/ui/image-with-fallback"
 import { AspectRatio } from "@/components/ui/aspect-ratio"

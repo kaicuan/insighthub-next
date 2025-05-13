@@ -1,6 +1,6 @@
 import { LayoutGrid, List, BarChart } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DashboardSummary } from '@/types/dashboard';
+import { DashboardSummary } from '@/lib/definitions';
 import GridDashboard from '@/components/workspace/grid-dashboard';
 import ListDashboard from '@/components/workspace/list-dashboard';
 import DrawerDialog from '@/components/workspace/create-dashboard-drawer-dialog';

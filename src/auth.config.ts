@@ -20,7 +20,10 @@ export const authConfig = {
       
       const sitePages = ['/signin', '/signup', '/register'];
       if (isLoggedIn && sitePages.includes(nextUrl.pathname)) {
-        return Response.redirect(new URL(basePath + '/workspace', nextUrl));
+        const callbackUrl = nextUrl.searchParams.get('callbackUrl');
+        return Response.redirect(
+          new URL(callbackUrl || basePath + '/workspace', nextUrl)
+        );
       }
 
       return true;
@@ -51,9 +54,6 @@ export const authConfig = {
         console.error('Google sign-in error:', error);
         return false;
       }
-      if (account?.provider === 'google') {
-      }
-      return true;
     },
     async jwt({ token, user, account}) {
       if (account?.provider === 'google') {

@@ -18,6 +18,13 @@ export interface Author {
   profile_image: string | null;
 }
 
+export interface Comment {
+  id: string;
+  author: Author;
+  content: string;
+  created_at: string;
+}
+
 export interface Dataset {
   filename: string;
   columns: string[];

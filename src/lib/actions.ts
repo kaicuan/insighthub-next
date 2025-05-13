@@ -11,7 +11,6 @@ import sql from "@/lib/db";
 import { v4 as uuidv4 } from 'uuid';
 import Papa from 'papaparse';
 import { revalidatePath } from "next/cache";
-import { Chart } from "./definitions";
 
 
 export async function authenticate(
@@ -375,4 +374,101 @@ export async function updateDashboard(
 
   revalidatePath(`/dashboard/${id}/view`);
   redirect(`/dashboard/${id}/view`);
+}
+
+export async function toggleLike(
+  prevState: { message?: string; errors?: Record<string, string[]> } | undefined,
+  formData: FormData,
+){
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { message: "User not authenticated" };
+  }
+  const user = await getUserById(session.user.id);
+  if (!user) {
+    return { message: "User not found" };
+  }
+
+  const schema = z.object({
+    dashboardId: z.string().uuid(),
+    hasLiked: z.boolean()
+  });
+  const parsed = schema.safeParse({
+    dashboardId: formData.get('dashboardId'),
+    hasLiked: Boolean(formData.get('hasLiked')),
+  });
+  if (!parsed.success) {
+    console.log(parsed.error)
+    return { message:"Invalid input", "errors": parsed.error.flatten().fieldErrors };
+  }
+  const { dashboardId, hasLiked } = parsed.data;
+
+  try {
+    if (hasLiked) {
+      const id = uuidv4();
+      await sql`
+        INSERT INTO api_like (id, user_id, dashboard_id, created_at)
+        VALUES (${id}, ${user.id}, ${dashboardId}, NOW())
+        ON CONFLICT DO NOTHING;
+      `
+    } else {
+      await sql`
+        DELETE FROM api_like
+        WHERE user_id = ${user.id} AND dashboard_id = ${dashboardId}
+      `
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database error. Failed to update like' };
+  }
+
+  revalidatePath(`/dashboard/${dashboardId}/view`)
+  return { success: true }
+}
+
+export async function createComment(
+  prevState: { message?: string; errors?: Record<string, string[]> } | undefined,
+  formData: FormData,
+) {
+  // Auth validation
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { message: "User not authenticated" };
+  }
+  const user = await getUserById(session.user.id);
+  if (!user) {
+    return { message: "User not found" };
+  }
+
+  // Form validation
+  const schema = z.object({
+    dashboardId: z.string().uuid(),
+    content: z.string()
+      .min(1, 'Comment is required')
+      .max(501, 'Comment must be less than 500 characters'),
+  });
+  const parsed = schema.safeParse({
+    dashboardId: formData.get('dashboardId'),
+    content: formData.get('content'),
+  });
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors };
+  }
+  const { dashboardId, content } = parsed.data;
+
+  try {
+    const id = uuidv4();
+    await sql`
+      INSERT INTO api_comment
+        (id, user_id, dashboard_id, content, created_at)
+      VALUES 
+        (${id}, ${user.id}, ${dashboardId}, ${content}, NOW())
+    `;
+  } catch (error) {
+    console.error('Creation failed:', error);
+    return { message: 'Failed to create dashboard. Please try again.' };
+  }
+  
+  revalidatePath(`/dashboard/${dashboardId}/view`)
+  return { success: true }
 }

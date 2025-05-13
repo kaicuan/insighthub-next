@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import sql from "@/lib/db";
-import { EditDashboard, Dashboard } from "@/lib/definitions";
+import { EditDashboard, Dashboard, Comment } from "@/lib/definitions";
 
 export async function getDashboardView(id:string): Promise<Dashboard | undefined> {
   let dashboard;
@@ -61,7 +61,74 @@ export async function getDashboardView(id:string): Promise<Dashboard | undefined
   return dashboard[0];
 }
 
+export async function getLikeData(dashboardId: string) {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  const session = await auth()
+  const userId = session?.user?.id
+
+  let result;
+
+  if (userId) {
+    result = await sql`
+      SELECT 
+        COUNT(*) AS like_count,
+        EXISTS (
+          SELECT 1
+          FROM api_like
+          WHERE dashboard_id = ${dashboardId}
+          AND user_id = ${userId}
+        ) AS has_liked
+      FROM api_like
+      WHERE dashboard_id = ${dashboardId}
+    `;
+  } else {
+    result = await sql`
+      SELECT 
+        COUNT(*) AS like_count,
+        FALSE AS has_liked
+      FROM api_like
+      WHERE dashboard_id = ${dashboardId}
+    `;
+  }
+
+  return {
+    likeCount: parseInt(result[0]?.like_count || "0", 10),
+    hasLiked: Boolean(result[0]?.has_liked)
+  }
+}
+
+export async function getDashboardComment(id: string): Promise<Comment[] | undefined> {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  try {
+    const comments = await sql<Comment[]>`
+      SELECT
+        c.id,
+        c.content,
+        c.created_at,
+        json_build_object(
+          'id', u.id,
+          'first_name', u.first_name,
+          'last_name', u.last_name,
+          'profile_image', u.profile_image
+        ) AS author
+      FROM api_comment c
+      JOIN api_user u ON c.user_id = u.id
+      WHERE c.dashboard_id = ${id}
+      ORDER BY c.created_at ASC;
+    `;
+    return comments;
+  } catch (error) {
+    console.error('Failed to fetch comments:', error);
+    throw new Error('Failed to fetch comments.');
+  }
+}
+
 export async function getDashboardEdit(id:string): Promise<EditDashboard | undefined> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    notFound();
+  }
+  
   let dashboard;
   try {
     dashboard = await sql<EditDashboard[]>`
@@ -114,11 +181,6 @@ export async function getDashboardEdit(id:string): Promise<EditDashboard | undef
   } catch (error) {
     console.error('Failed to fetch dashboard:', error);
     throw new Error('Failed to fetch dashboard.');
-  }
-  
-  const session = await auth();
-  if (!session?.user?.id) {
-    notFound();
   }
 
   const isNotAuthor = session?.user?.id !== dashboard[0].author.id.toString();
