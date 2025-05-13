@@ -16,7 +16,6 @@ export default function CommentForm({ id }: { id: string }) {
     if (state?.message) {
       toast.error(state.message)
     } else if (state?.success) {
-      // toast.success("Comment posted successfully")
       setComment("")
       setIsExpanded(false)
     }

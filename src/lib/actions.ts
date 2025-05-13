@@ -3,7 +3,7 @@
 
 import { auth, signIn } from "@/auth";
 import { getUserByEmail, getUserById } from "@/lib/data";
-import { AuthError } from "next-auth";
+import { AuthError, CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import bcrypt from 'bcrypt';
@@ -20,15 +20,13 @@ export async function authenticate(
   try {
     await signIn('insighthub', formData);
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.name) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
-        default:
-          return 'Something went wrong.';
-      }
+    if (error instanceof CredentialsSignin) {
+      return "Invalid credentials."
     }
-    throw error;
+    if (error instanceof AuthError) {
+      return "Something went wrong."
+    }
+    throw error
   }
 }
 
