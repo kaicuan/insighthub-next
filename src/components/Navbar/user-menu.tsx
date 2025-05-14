@@ -107,7 +107,7 @@ export default async function UserMenu() {
           <form
             action={async () => {
               "use server"
-              await signOut();
+              await signOut({ redirectTo: '/insighthub/signin' });
             }}
           >
             <button type='submit' className='w-full'>

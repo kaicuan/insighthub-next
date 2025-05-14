@@ -1,15 +1,19 @@
 'use client';
 
+import { useActionState, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertCircle, Loader2 } from 'lucide-react';
 import { authenticate } from '@/lib/actions';
-import { useActionState } from 'react';
-import { useState } from 'react';
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
 export default function SigninForm() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || basePath + '/workspace';
   const [email, setEmail] = useState('');
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
 
@@ -23,6 +27,7 @@ export default function SigninForm() {
           </AlertDescription>
         </Alert>
       )}
+      <input type="hidden" name="redirectTo" value={callbackUrl} />
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input

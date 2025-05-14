@@ -15,8 +15,10 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnWorkspace = nextUrl.pathname.startsWith('/workspace');
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
+      const isEditPath = nextUrl.pathname.endsWith('/edit')
 
-      if (isOnWorkspace) return isLoggedIn;
+      if (isOnWorkspace || (isOnDashboard && isEditPath)) return isLoggedIn;
       
       const sitePages = ['/signin', '/signup', '/register'];
       if (isLoggedIn && sitePages.includes(nextUrl.pathname)) {
