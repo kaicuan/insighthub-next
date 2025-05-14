@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import SigninForm from '@/components/auth/signin-form';
 import SocialSigninButton from '@/components/auth/social-signin-button';
+import { Suspense } from 'react';
 
 export default function SigninPage() {
   return (
@@ -17,7 +18,9 @@ export default function SigninPage() {
         </div>
 
         {/* Social Sign-in Buttons */}
-        <SocialSigninButton />
+        <Suspense>
+          <SocialSigninButton />
+        </Suspense>
 
         {/* Divider */}
         <div className="relative">
@@ -32,7 +35,9 @@ export default function SigninPage() {
         </div>
 
         {/* Form */}
-        <SigninForm />
+        <Suspense>
+          <SigninForm />
+        </Suspense>
 
         {/* Footer Links */}
         <div className="text-sm text-muted-foreground text-center">

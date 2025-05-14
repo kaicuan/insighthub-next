@@ -1,10 +1,9 @@
 import Link from 'next/link';
-import GoogleLogo from '@/assets/icons/google_logo'
-import UQLogo from '@/assets/icons/uq_logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import SocialSigninButton from '@/components/auth/social-signin-button';
+import { Suspense } from 'react';
 
 export default function SignUpPage() {
   return (
@@ -19,7 +18,9 @@ export default function SignUpPage() {
         </div>
 
         {/* Social Sign-in Buttons */}
-        <SocialSigninButton />
+        <Suspense>
+          <SocialSigninButton />
+        </Suspense>
 
         {/* Divider */}
         <div className="relative">

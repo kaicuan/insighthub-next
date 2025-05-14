@@ -30,6 +30,10 @@ export async function authenticate(
   }
 }
 
+export async function googleauth() {
+  await signIn("google");
+}
+
 export async function register(
   prevState: { message?: string; errors?: Record<string, string[]> } | undefined,
   formData: FormData,

@@ -5,6 +5,10 @@ import { NextResponse, type NextRequest } from "next/server";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 export async function GET(request: NextRequest) {
+  const ourl = new URL(request.url);
+  const callbackUrl = ourl.searchParams.get('callbackUrl');
+  const callbackUrlParam = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
+  
   const {
     headers,
     nextUrl: { protocol, host, pathname, search },
@@ -33,7 +37,7 @@ export async function GET(request: NextRequest) {
     
     if (errorMessage == "Error: MISSING_CONSENT") {
       return NextResponse.redirect(
-        new URL(basePath + `/request-consent`, url)
+        new URL(basePath + `/request-consent` + callbackUrlParam, url)
       );
     }
     
@@ -43,6 +47,6 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.redirect(
-    new URL(basePath + "/workspace", url)
+    new URL(callbackUrl || basePath + "/workspace", url)
   );
 }
